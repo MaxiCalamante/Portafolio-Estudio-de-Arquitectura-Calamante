@@ -1,0 +1,3 @@
+@echo off
+echo Starting backend server in development mode...
+npx nodemon server.js
