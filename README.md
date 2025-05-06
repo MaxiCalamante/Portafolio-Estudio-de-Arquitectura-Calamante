@@ -182,4 +182,4 @@ Para consultas o soporte, contactá a:
 
 ---
 
-Desarrollado por Maximo Calamante para Estudio Javier Calamante © 2024
+Desarrollado por Maximo Calamante para Estudio Calamante © 2025
