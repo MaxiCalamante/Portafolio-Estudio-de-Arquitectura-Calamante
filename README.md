@@ -71,9 +71,7 @@ JWT_SECRET=tu_clave_secreta_para_jwt
 
 Para ejecutar el proyecto en modo desarrollo, necesitás iniciar tanto el servidor backend como el frontend:
 
-1. **Iniciá el servidor backend**:
-
-# Ejecutar el archivo Arrancar.bat el archivo inicia el servidor backend y el frontend
+((( Ejecutar el archivo Arrancar.bat el archivo inicia el servidor backend y el frontend ))
 
 El frontend estará disponible en `http://localhost:5173` y el backend en `http://localhost:3000`.
 
