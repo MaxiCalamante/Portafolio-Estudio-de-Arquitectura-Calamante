@@ -147,7 +147,7 @@ const ProjectDetailPage: React.FC = () => {
                   Contáctanos para discutir tus ideas.
                 </p>
                 <Link
-                  to="/#contact"
+                  to="/?scrollTo=contact"
                   className="inline-block bg-primary text-primary-foreground px-5 py-3 rounded-sm hover:bg-primary/90 transition-colors duration-300 w-full text-center"
                 >
                   Contactar ahora

@@ -62,7 +62,7 @@ const ProjectsSection: React.FC = () => {
 
         <div className="text-center mt-12 reveal">
           <Link
-            to="/projects"
+            to="/proyectos"
             className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-sm hover:bg-primary/90 transition-colors duration-300"
           >
             Ver todos los proyectos

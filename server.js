@@ -134,21 +134,21 @@ function createTables() {
     } else {
       console.log('La tabla de administradores fue creada o ya existe');
 
-      // Verificamos si existe el usuario administrador, si no, lo creamos
-      db.query('SELECT * FROM admins WHERE username = ?', ['javiercalamante69'], (err, results) => {
+      // Verificamos si existe el usuario administrador, si no, lo creamos (Remplazar admin por el nombre de usuario)
+      db.query('SELECT * FROM admins WHERE username = ?', ['admin'], (err, results) => {
         if (err) {
           console.error('Error al verificar el usuario administrador:', err);
         } else if (results.length === 0) {
-          // Creamos el usuario administrador personalizado (usuario: javiercalamante69, contraseña: 140103JC)
-          bcrypt.hash('140103JC', 10, (err, hash) => {
+          // Creamos el usuario administrador personalizado (usuario: admin, contraseña: password)
+          bcrypt.hash('password', 10, (err, hash) => {
             if (err) {
               console.error('Error al hashear la contraseña:', err);
             } else {
-              db.query('INSERT INTO admins (username, password) VALUES (?, ?)', ['javiercalamante69', hash], (err) => {
+              db.query('INSERT INTO admins (username, password) VALUES (?, ?)', ['admin', hash], (err) => {
                 if (err) {
                   console.error('Error al crear el administrador personalizado:', err);
                 } else {
-                  console.log('Usuario administrador "javiercalamante69" creado');
+                  console.log('Usuario administrador "admin" creado');
                 }
               });
             }

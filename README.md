@@ -20,15 +20,14 @@ Para ejecutar este proyecto necesitás tener instalado:
 
 - Node.js (v16 o superior)
 - MySQL (v8 o superior)
-- Bun (opcional, para mejor rendimiento)
 
 ## 🔧 Instalación
 
 ### 1. Cloná el repositorio
 
 ```bash
-git clone https://github.com/estudio-calamante.git
-cd estudio-calamante
+git clone https://github.com/MaxiCalamante/Portafolio-Estudio-de-Arquitectura-Calamante.git
+cd Portafolio-Estudio-de-Arquitectura-Calamante-main
 ```
 
 ### 2. Instalá las dependencias
@@ -37,8 +36,6 @@ cd estudio-calamante
 # Usando npm
 npm install
 
-# O usando Bun (recomendado por su velocidad)
-bun install
 ```
 
 ### 3. Configurá la base de datos
@@ -76,23 +73,7 @@ Para ejecutar el proyecto en modo desarrollo, necesitás iniciar tanto el servid
 
 1. **Iniciá el servidor backend**:
 
-```bash
-# Usando el script incluido
-./start-backend-dev.bat
-
-# O manualmente
-node server.js
-```
-
-2. **Iniciá el servidor de desarrollo frontend**:
-
-```bash
-# Usando npm
-npm run dev
-
-# O usando Bun
-bun run dev
-```
+# Ejecutar el archivo Arrancar.bat el archivo inicia el servidor backend y el frontend
 
 El frontend estará disponible en `http://localhost:5173` y el backend en `http://localhost:3000`.
 
@@ -106,20 +87,6 @@ Para desplegar en producción:
 # Usando npm
 npm run build
 
-# O usando Bun
-bun run build
-```
-
-2. **Iniciá el servidor**:
-
-```bash
-# Usando el script incluido
-./start-backend.bat
-
-# O manualmente
-node server.js
-```
-
 El servidor servirá tanto la API como los archivos estáticos del frontend construido.
 
 ## 👨‍💻 Panel de administración
@@ -128,8 +95,8 @@ El sistema incluye un panel de administración para gestionar proyectos y mensaj
 
 - **URL**: `/admin`
 - **Credenciales por defecto**:
-  - Usuario: `javiercalamante69`
-  - Contraseña: `140103JC`
+  - Usuario: `admin`
+  - Contraseña: `password`
 
 ⚠️ **Importante**: Cambiá estas credenciales después del primer inicio de sesión por motivos de seguridad.
 
@@ -148,23 +115,7 @@ El sistema incluye un panel de administración para gestionar proyectos y mensaj
 └── README.md           # Este archivo
 ```
 
-## 📤 Archivos a subir a GitHub
 
-Al subir este proyecto a GitHub, te recomendamos:
-
-### ✅ Incluir:
-- Todo el código fuente (`/src`)
-- Archivos de configuración (`.gitignore`, `tsconfig.json`, etc.)
-- Scripts de inicio (`start-backend.bat`, `start-backend-dev.bat`)
-- Esquema de la base de datos (`calamante_studio.sql`)
-- Documentación (`README.md`, etc.)
-
-### ❌ No incluir:
-- Carpeta `node_modules` (asegurate de que esté en `.gitignore`)
-- Archivos `.env` con credenciales sensibles
-- Carpeta `public/uploads` con imágenes subidas por usuarios
-- Archivos de construcción (`/dist`, `/build`)
-- Archivos temporales o de caché
 
 ## 🔒 Seguridad
 
@@ -182,4 +133,4 @@ Para consultas o soporte, contactá a:
 
 ---
 
-Desarrollado por Maximo Calamante para Estudio Javier Calamante © 2024
+Desarrollado por Maximo Calamante para Estudio Javier Calamante © 2025

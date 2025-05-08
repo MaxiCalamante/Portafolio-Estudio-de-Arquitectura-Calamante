@@ -59,9 +59,9 @@ const MobileMenu: React.FC<{
             {[
               { href: isProjectDetail ? "/" : "#home", label: "Inicio", delay: "100ms" },
               { href: isProjectDetail ? "/#about" : "#about", label: "Sobre Nosotros", delay: "200ms" },
-              { href: "/servicios", label: "Servicios", delay: "300ms" },
-              { href: "/proyectos", label: "Proyectos", delay: "400ms" },
-              { href: "/contacto", label: "Contacto", delay: "500ms" }
+              { href: isProjectDetail ? "/#services" : "#services", label: "Servicios", delay: "300ms" },
+              { href: isProjectDetail ? "/#projects" : "#projects", label: "Proyectos", delay: "400ms" },
+              { href: isProjectDetail ? "/#contact" : "#contact", label: "Contacto", delay: "500ms" }
             ].map((item, index) => (
               <a
                 key={index}
@@ -206,9 +206,9 @@ const Navbar: React.FC = () => {
             {[
               { href: isProjectDetail ? "/" : "#home", label: "Inicio" },
               { href: isProjectDetail ? "/#about" : "#about", label: "Sobre Nosotros" },
-              { href: "/servicios", label: "Servicios" },
-              { href: "/proyectos", label: "Proyectos" },
-              { href: "/contacto", label: "Contacto" }
+              { href: isProjectDetail ? "/#services" : "#services", label: "Servicios" },
+              { href: isProjectDetail ? "/#projects" : "#projects", label: "Proyectos" },
+              { href: isProjectDetail ? "/#contact" : "#contact", label: "Contacto" }
             ].map((item, index) => (
               <a
                 key={index}

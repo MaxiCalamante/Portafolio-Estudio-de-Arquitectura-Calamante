@@ -29,9 +29,23 @@ const Index: React.FC = () => {
     };
   }, []);
 
-  // Scroll to the appropriate section based on the route
+  // Scroll to the appropriate section based on the route or URL parameters
   useEffect(() => {
     const scrollToSection = () => {
+      // Verificar si hay un parámetro scrollTo en la URL
+      const params = new URLSearchParams(location.search);
+      const scrollToParam = params.get('scrollTo');
+
+      if (scrollToParam) {
+        // Si hay un parámetro scrollTo, desplazarse a esa sección
+        const targetSection = document.getElementById(scrollToParam);
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+          return; // Salir de la función si ya se ha desplazado
+        }
+      }
+
+      // Si no hay parámetro o la sección no existe, verificar la ruta
       if (location.pathname === '/servicios') {
         const servicesSection = document.getElementById('services');
         if (servicesSection) {
@@ -47,7 +61,7 @@ const Index: React.FC = () => {
 
     // Small delay to ensure the page is fully loaded
     setTimeout(scrollToSection, 300);
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
