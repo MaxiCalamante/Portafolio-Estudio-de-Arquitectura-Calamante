@@ -1,0 +1,13 @@
+{
+  "name": "Estudio Javier Calamante",
+  "short_name": "J. Calamante",
+  "description": "Arquitecto en Tandil",
+  "lang": "es-AR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

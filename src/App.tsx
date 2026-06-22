@@ -1,41 +1,25 @@
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './hooks/AuthProvider'
+import { ProtectedRoute } from './components/ProtectedRoute'
+import { AdminPage } from './pages/AdminPage'
+import { HomePage } from './pages/HomePage'
+import { LoginPage } from './pages/LoginPage'
+import { PrivacyPage } from './pages/PrivacyPage'
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import ProjectsPage from "./pages/ProjectsPage";
-import ProjectDetailPage from "./pages/ProjectDetailPage";
-import NotFound from "./pages/NotFound";
-import AdminLogin from "./pages/AdminLogin";
-import AdminPanel from "./pages/AdminPanel";
-
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/proyectos" element={<ProjectsPage />} />
-          <Route path="/proyectos/:slug" element={<ProjectDetailPage />} />
-          <Route path="/servicios" element={<Index />} /> {/* Redirige a la sección de servicios en la página principal */}
-          <Route path="/contacto" element={<Index />} /> {/* Redirige a la sección de contacto en la página principal */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<AdminPanel />} />
-          {/* Mantener compatibilidad con rutas antiguas */}
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:slug" element={<ProjectDetailPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+          <Route path="/privacidad" element={<PrivacyPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </AuthProvider>
+    </BrowserRouter>
+  )
+}
 
-export default App;
+export default App

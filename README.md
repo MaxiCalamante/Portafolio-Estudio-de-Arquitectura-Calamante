@@ -1,101 +1,65 @@
-Estudio Javier Calamante - Sitio Web
-Este repositorio contiene el código fuente del sitio web del Estudio Javier Calamante, un estudio de arquitectura ubicado en Tandil, Buenos Aires, Argentina.
+# Estudio Javier Calamante
 
-Descripción general
-El proyecto está desarrollado con React para el frontend y Node.js con Express para el backend. Utiliza MySQL como base de datos para almacenar información sobre proyectos y mensajes enviados desde el formulario de contacto.
-Cuenta además con un sistema de autenticación y un panel administrativo para gestionar el contenido.
+Landing y portfolio administrable para un estudio de arquitectura en Tandil. Incluye portfolio público, contacto, SEO local y panel privado para gestionar proyectos y consultas.
 
-Tecnologías utilizadas
-Frontend: React, TypeScript, TailwindCSS, Shadcn UI
-Backend: Node.js, Express
-Base de datos: MySQL
-Procesamiento de imágenes: Sharp (conversión automática a WebP)
-Autenticación: JWT
+## Funciones
 
-Requisitos previos
-Antes de iniciar el proyecto es necesario tener instalado lo siguiente:
+- Landing editorial responsive.
+- Portfolio alimentado desde Supabase, con estado borrador/publicado, orden, portada y galería.
+- Vista ampliada de cada proyecto.
+- Formulario de consultas con validación, consentimiento y límite básico por email.
+- `/login` privado, sin enlaces visibles desde la web.
+- `/admin` protegido para crear, editar y eliminar proyectos e imágenes.
+- Bandeja de consultas con estados, notas privadas, teléfono y email directos.
+- RLS, lista de administradores y políticas privadas de Storage.
+- SEO local para “arquitecto en Tandil”, Schema.org, Open Graph, robots, sitemap y manifest.
+- Reglas de Vercel para SPA, cache y cabeceras de seguridad.
 
-Node.js (versión 16 o superior)
+## Desarrollo
 
-MySQL (versión 8 o superior)
-
-Instalación
-Clonar el repositorio:
-
-git clone https://github.com/MaxiCalamante/Portafolio-Estudio-de-Arquitectura-Calamante.git
-cd Portafolio-Estudio-de-Arquitectura-Calamante-main
-Instalar dependencias:
-
-
+```bash
 npm install
-Crear la base de datos:
+cp .env.example .env.local
+npm run dev
+```
 
-Crear una base en MySQL llamada calamante_studio
+Variables necesarias:
 
-Importar el esquema desde el archivo incluido:
+```env
+VITE_SUPABASE_URL=https://PROJECT_REF.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+VITE_SITE_URL=https://dominio-final.example
+```
 
-mysql -u root -p calamante_studio < calamante_studio.sql
-Configurar las variables de entorno:
+## Supabase
 
-Crear un archivo .env en la raíz del proyecto con los siguientes valores:
+1. Crear un proyecto Supabase nuevo y aislado.
+2. Aplicar `supabase/migrations/202606220001_portfolio_schema.sql`.
+3. Copiar la URL y la publishable key a `.env.local` y a Vercel.
+4. En Authentication → Users, crear o invitar a `javiercalamantetandil@gmail.com`.
+5. Mantener deshabilitado el registro público si sólo Javier administrará el sitio.
 
-PORT=3000
+La migración autoriza ese email en `admin_users`. Los visitantes sólo pueden leer proyectos publicados y ejecutar `submit_inquiry`; no pueden leer consultas ni modificar datos.
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=tu_contraseña
-DB_NAME=calamante_studio
+### Estado de la conexión
 
-JWT_SECRET=una_clave_segura
-Ejecución del proyecto
-Modo desarrollo
-Para iniciar tanto el servidor como el frontend, ejecutar el archivo Arrancar.bat.
-Esto levanta ambos servicios automáticamente.
+La organización Supabase `Turnero` alcanzó el límite gratuito de dos proyectos activos. No se modificó ni pausó ninguno. El esquema y la integración están completos, pero hace falta liberar un cupo o ampliar el plan para crear y conectar el proyecto nuevo.
 
-Frontend disponible en: http://localhost:5173
+## Vercel
 
-Backend disponible en: http://localhost:3000
+- Framework: Vite
+- Build command: `npm run build`
+- Output: `dist`
+- Agregar las dos variables públicas de Supabase.
+- Actualizar `canonical`, `robots.txt`, `sitemap.xml` y JSON-LD si el dominio definitivo no es `javiercalamante.com.ar`.
 
-Modo producción
-Compilar el frontend:
+## Verificación
 
+```bash
+npm run lint
 npm run build
-El backend se encargará de servir tanto la API como los archivos estáticos generados.
+```
 
-Panel de administración
-El sistema incluye una interfaz para que el estudio pueda administrar proyectos y revisar mensajes de contacto.
+## Contenido inicial
 
-Ruta: /admin
-
-Usuario por defecto: admin
-
-Contraseña por defecto: password
-
-Importante: Por razones de seguridad, se recomienda cambiar las credenciales predeterminadas luego del primer acceso.
-
-Estructura del proyecto
-├── public/                Archivos estáticos y uploads
-├── src/                   Código fuente del frontend
-│   ├── components/        Componentes reutilizables
-│   ├── pages/             Vistas/páginas del sitio
-│   ├── services/          Comunicación con la API
-│   └── styles/            Estilos
-├── server.js              Backend con Express
-├── calamante_studio.sql   Esquema inicial de la base de datos
-└── README.md              Este archivo
-Seguridad
-Para un entorno de producción:
-
-Utilizar una clave JWT segura y única
-
-Cambiar las credenciales de acceso del administrador
-
-Verificar los permisos de la carpeta uploads
-
-Implementar HTTPS en el servidor
-
-Contacto
-Para consultas o soporte, escribir a:
-maximocalamante14@gmail.com
-
-Desarrollado por Máximo Calamante para Estudio Javier Calamante - Año 2025
+Mientras Supabase no tenga proyectos publicados, la landing muestra tres imágenes conceptuales identificadas como tales. El primer proyecto publicado desde `/admin` reemplaza automáticamente esa selección.
