@@ -47,6 +47,7 @@ La organización Supabase `Turnero` alcanzó el límite gratuito de dos proyecto
 
 ## Vercel
 
+- Producción: https://javier-calamante-arquitecto.vercel.app
 - Framework: Vite
 - Build command: `npm run build`
 - Output: `dist`
