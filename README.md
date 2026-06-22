@@ -52,7 +52,7 @@ La organización Supabase `Turnero` alcanzó el límite gratuito de dos proyecto
 - Build command: `npm run build`
 - Output: `dist`
 - Agregar las dos variables públicas de Supabase.
-- Actualizar `canonical`, `robots.txt`, `sitemap.xml` y JSON-LD si el dominio definitivo no es `javiercalamante.com.ar`.
+- Actualizar `canonical`, `robots.txt`, `sitemap.xml` y JSON-LD cuando se conecte un dominio personalizado.
 
 ## Verificación
 

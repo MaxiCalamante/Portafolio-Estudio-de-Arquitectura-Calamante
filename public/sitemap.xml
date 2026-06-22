@@ -2,12 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://javiercalamante.com.ar/</loc>
+    <loc>https://javier-calamante-arquitecto.vercel.app/</loc>
     <lastmod>2026-06-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://javiercalamante.com.ar/images/architecture-landscape.webp</image:loc>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/architecture-landscape.webp</image:loc>
       <image:title>Estudio Javier Calamante, arquitecto en Tandil</image:title>
     </image:image>
   </url>

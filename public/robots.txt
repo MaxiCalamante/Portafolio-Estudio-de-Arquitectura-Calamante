@@ -3,4 +3,4 @@ Allow: /
 Disallow: /login
 Disallow: /admin
 
-Sitemap: https://javiercalamante.com.ar/sitemap.xml
+Sitemap: https://javier-calamante-arquitecto.vercel.app/sitemap.xml
