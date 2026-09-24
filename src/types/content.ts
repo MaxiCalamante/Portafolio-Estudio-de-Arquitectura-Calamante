@@ -19,6 +19,8 @@ export interface ProjectRecord {
   location: string
   category: ProjectCategory
   completion_year: number | null
+  surface?: string
+  materials?: string
   status: ProjectStatus
   featured: boolean
   sort_order: number

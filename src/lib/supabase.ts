@@ -16,6 +16,10 @@ export const supabase: SupabaseClient | null = supabaseConfigured
   : null
 
 export function publicImageUrl(storagePath: string | null | undefined) {
-  if (!storagePath || !supabase) return null
+  if (!storagePath) return null
+  if (storagePath.startsWith('/') || storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
+    return storagePath
+  }
+  if (!supabase) return null
   return supabase.storage.from('project-images').getPublicUrl(storagePath).data.publicUrl
 }
