@@ -17,7 +17,6 @@ import {
 function Hero() {
   return (
     <section className="hero" id="inicio">
-      <Header />
       <div className="hero__copy reveal">
         <div className="hero__badge-kicker">
           <span className="badge-capba">C.A.P.B.A. Matr. 15327</span>
@@ -379,6 +378,7 @@ export function HomePage() {
       <a className="skip-link" href="#proyectos">
         Saltar al contenido
       </a>
+      <Header />
       <main>
         <Hero />
         <StatsBar />
