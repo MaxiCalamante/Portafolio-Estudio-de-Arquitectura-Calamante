@@ -21,7 +21,7 @@ export function PrivacyPage() {
         <h2>Tus derechos</h2>
         <p>Podés solicitar acceso, corrección o eliminación de tus datos escribiendo a <a href="mailto:javiercalamantetandil@gmail.com">javiercalamantetandil@gmail.com</a>.</p>
         <h2>Responsable</h2>
-        <p>Estudio Javier Calamante · Maipú 710, Tandil, Buenos Aires, Argentina.</p>
+        <p>Estudio Javier Calamante · Maipú 710, Oficina 2, Tandil, Buenos Aires, Argentina.</p>
         <Link className="text-link" to="/">Volver al sitio</Link>
       </article>
     </main>
