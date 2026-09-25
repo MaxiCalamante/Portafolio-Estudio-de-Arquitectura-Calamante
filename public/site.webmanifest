@@ -1,12 +1,12 @@
 {
-  "name": "Estudio Javier Calamante",
+  "name": "Estudio Javier Calamante · Arquitecto",
   "short_name": "J. Calamante",
-  "description": "Arquitecto en Tandil",
+  "description": "Estudio de arquitectura en Tandil · Matrícula CAPBA 15327",
   "lang": "es-AR",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#141413",
+  "theme_color": "#141413",
   "icons": [
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]

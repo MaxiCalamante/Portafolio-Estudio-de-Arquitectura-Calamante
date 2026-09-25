@@ -200,6 +200,8 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   }, [project])
 
   const [activeImageIdx, setActiveImageIdx] = useState(0)
+  const [touchStartX, setTouchStartX] = useState<number | null>(null)
+  const [touchDeltaX, setTouchDeltaX] = useState<number>(0)
 
   const handleNext = useCallback(() => {
     setActiveImageIdx((prev) => (prev + 1) % images.length)
@@ -208,6 +210,29 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   const handlePrev = useCallback(() => {
     setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length)
   }, [images.length])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX)
+    setTouchDeltaX(0)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStartX !== null) {
+      setTouchDeltaX(e.targetTouches[0].clientX - touchStartX)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null) return
+    const minSwipeDistance = 40
+    if (touchDeltaX < -minSwipeDistance) {
+      handleNext()
+    } else if (touchDeltaX > minSwipeDistance) {
+      handlePrev()
+    }
+    setTouchStartX(null)
+    setTouchDeltaX(0)
+  }
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -260,11 +285,17 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
           <div className="project-dialog__main-col">
             {currentImageUrl && (
               <div className="dialog-viewer">
-                <div className="dialog-viewer__stage">
+                <div
+                  className="dialog-viewer__stage"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                >
                   <img
                     key={currentImage.id}
                     src={currentImageUrl}
                     alt={currentImage.alt_text || project.title}
+                    decoding="async"
                   />
                   {images.length > 1 && (
                     <>

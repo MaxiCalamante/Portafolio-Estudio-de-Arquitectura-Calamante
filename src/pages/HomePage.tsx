@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { ArrowIcon } from '../components/ArrowIcon'
 import { WhatsAppIcon } from '../components/WhatsAppIcon'
 import { ContactForm } from '../components/ContactForm'
@@ -344,7 +345,7 @@ function Contact() {
           <a href={social.facebook} target="_blank" rel="noreferrer">Facebook</a>
           <a href={social.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           <a href={contact.mapsHref} target="_blank" rel="noreferrer">Ubicación Estudio (Maipú 710)</a>
-          <a href="/privacidad">Privacidad</a>
+          <Link to="/privacidad">Privacidad</Link>
         </nav>
         <p>© {new Date().getFullYear()} Estudio Javier Calamante · Matrícula C.A.P.B.A. Nº 15327 (Distrito VIII)</p>
       </footer>
