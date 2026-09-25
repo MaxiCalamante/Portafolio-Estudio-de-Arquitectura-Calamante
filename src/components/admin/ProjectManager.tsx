@@ -273,15 +273,15 @@ function ProjectEditor({ project, onClose, onSaved }: { project: ProjectWithImag
 
 function projectToForm(project: ProjectWithImages): ProjectFormState {
   return {
-    title: project.title,
-    slug: project.slug,
-    excerpt: project.excerpt,
-    description: project.description,
-    location: project.location,
-    category: project.category,
+    title: project.title ?? '',
+    slug: project.slug ?? '',
+    excerpt: project.excerpt ?? '',
+    description: project.description ?? '',
+    location: project.location ?? 'Tandil, Buenos Aires',
+    category: project.category ?? 'Residencial',
     completionYear: project.completion_year?.toString() ?? '',
-    status: project.status,
-    featured: project.featured,
-    sortOrder: project.sort_order.toString(),
+    status: project.status ?? 'draft',
+    featured: Boolean(project.featured),
+    sortOrder: (project.sort_order ?? 0).toString(),
   }
 }

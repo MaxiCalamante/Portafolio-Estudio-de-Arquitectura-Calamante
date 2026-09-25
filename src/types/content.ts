@@ -45,7 +45,7 @@ export interface InquiryRecord {
   message: string
   consent: boolean
   status: InquiryStatus
-  admin_notes: string
+  admin_notes: string | null
   created_at: string
   updated_at: string
 }

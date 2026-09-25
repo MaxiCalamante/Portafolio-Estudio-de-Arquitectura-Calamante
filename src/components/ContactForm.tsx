@@ -19,17 +19,18 @@ export function ContactForm() {
   const [form, setForm] = useState(initialForm)
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
+  const [submittedWaUrl, setSubmittedWaUrl] = useState('')
 
-  function getFormattedWhatsAppUrl() {
-    const text = `Hola Arq. Javier Calamante, mi nombre es ${form.name || 'un interesado'}.
-Quisiera consultarle por un proyecto de: *${form.projectType}*.
-Ubicación / Zona: ${form.location}.
-Estado actual: ${form.budgetRange}.
-Teléfono de contacto: ${form.phone || 'No especificado'}.
-Email: ${form.email || 'No especificado'}.
+  function getFormattedWhatsAppUrl(data = form) {
+    const text = `Hola Arq. Javier Calamante, mi nombre es ${data.name || 'un interesado'}.
+Quisiera consultarle por un proyecto de: *${data.projectType}*.
+Ubicación / Zona: ${data.location}.
+Estado actual: ${data.budgetRange}.
+Teléfono de contacto: ${data.phone || 'No especificado'}.
+Email: ${data.email || 'No especificado'}.
 
 Detalle del proyecto:
-${form.message || 'Quisiera coordinar una reunión de asesoramiento para conversar ideas y presupuesto.'}`
+${data.message || 'Quisiera coordinar una reunión de asesoramiento para conversar ideas y presupuesto.'}`
 
     return `https://wa.me/5492494543936?text=${encodeURIComponent(text.trim())}`
   }
@@ -41,6 +42,8 @@ ${form.message || 'Quisiera coordinar una reunión de asesoramiento para convers
       return
     }
 
+    const waUrl = getFormattedWhatsAppUrl(form)
+    setSubmittedWaUrl(waUrl)
     setStatus('sending')
     setError('')
 
@@ -68,7 +71,6 @@ ${form.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     }
 
     // Direct fallback: Open WhatsApp with the pre-formatted lead
-    const waUrl = getFormattedWhatsAppUrl()
     window.open(waUrl, '_blank', 'noopener,noreferrer')
     setForm(initialForm)
     setStatus('success')
@@ -85,7 +87,7 @@ ${form.message || 'Quisiera coordinar una reunión de asesoramiento para convers
         <div className="contact-form__success-actions">
           <a
             className="button button--whatsapp"
-            href={getFormattedWhatsAppUrl()}
+            href={submittedWaUrl || getFormattedWhatsAppUrl()}
             target="_blank"
             rel="noreferrer"
           >

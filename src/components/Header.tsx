@@ -69,7 +69,7 @@ export function Header() {
         setTimeout(() => {
           target.scrollIntoView({ behavior: 'smooth' })
           window.history.pushState(null, '', href)
-        }, 60)
+        }, menuOpen ? 60 : 0)
       }
     }
   }

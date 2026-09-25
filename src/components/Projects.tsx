@@ -205,12 +205,18 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   const [touchDeltaX, setTouchDeltaX] = useState<number>(0)
 
   const handleNext = useCallback(() => {
+    if (images.length <= 1) return
     setActiveImageIdx((prev) => (prev + 1) % images.length)
   }, [images.length])
 
   const handlePrev = useCallback(() => {
+    if (images.length <= 1) return
     setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length)
   }, [images.length])
+
+  useEffect(() => {
+    setActiveImageIdx(0)
+  }, [project])
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.targetTouches[0].clientX)
@@ -284,7 +290,7 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
 
         <div className="project-dialog__body">
           <div className="project-dialog__main-col">
-            {currentImageUrl && (
+            {currentImageUrl ? (
               <div className="dialog-viewer">
                 <div
                   className="dialog-viewer__stage"
@@ -349,6 +355,10 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
                     })}
                   </div>
                 )}
+              </div>
+            ) : (
+              <div className="dialog-viewer__stage">
+                <p style={{ color: 'var(--muted)', margin: 0 }}>Fotografías en preparación para esta obra.</p>
               </div>
             )}
           </div>

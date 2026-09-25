@@ -12,5 +12,8 @@ export function toSlug(value: string) {
 
 export function safeFileName(fileName: string) {
   const extension = fileName.split('.').pop()?.toLowerCase() || 'jpg'
-  return `${crypto.randomUUID()}.${extension.replace(/[^a-z0-9]/g, '')}`
+  const id = typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+    ? crypto.randomUUID()
+    : `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}`
+  return `${id}.${extension.replace(/[^a-z0-9]/g, '')}`
 }

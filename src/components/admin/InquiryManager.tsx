@@ -84,7 +84,7 @@ export function InquiryManager() {
             </dl>
             <div className="inquiry-detail__message"><h3>Mensaje</h3><p>{selected.message}</p></div>
             <label className="admin-form__label">Estado<select value={selected.status} onChange={(event) => void updateInquiry(selected, { status: event.target.value as InquiryStatus })}><option value="new">Nueva</option><option value="contacted">Contactada</option><option value="archived">Archivada</option></select></label>
-            <label className="admin-form__label">Notas privadas<textarea value={selected.admin_notes} onChange={(event) => setSelected({ ...selected, admin_notes: event.target.value })} rows={5} maxLength={4000} /><button className="admin-button" type="button" onClick={() => void updateInquiry(selected, { admin_notes: selected.admin_notes })}>Guardar notas</button></label>
+            <label className="admin-form__label">Notas privadas<textarea value={selected.admin_notes ?? ''} onChange={(event) => setSelected({ ...selected, admin_notes: event.target.value })} rows={5} maxLength={4000} /><button className="admin-button" type="button" onClick={() => void updateInquiry(selected, { admin_notes: selected.admin_notes })}>Guardar notas</button></label>
             <button className="danger-link inquiry-detail__delete" type="button" onClick={() => void deleteInquiry(selected)}>Eliminar consulta</button>
           </div>
         </div>
