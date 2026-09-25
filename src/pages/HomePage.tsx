@@ -369,9 +369,21 @@ export function HomePage() {
         }),
       { threshold: 0.1 },
     )
-    const elements = document.querySelectorAll('.reveal')
-    elements.forEach((element) => observer.observe(element))
-    return () => observer.disconnect()
+
+    const observeReveals = () => {
+      document.querySelectorAll('.reveal:not(.is-visible)').forEach((element) => observer.observe(element))
+    }
+    observeReveals()
+
+    const mutationObserver = new MutationObserver(() => {
+      observeReveals()
+    })
+    mutationObserver.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      observer.disconnect()
+      mutationObserver.disconnect()
+    }
   }, [])
 
   return (

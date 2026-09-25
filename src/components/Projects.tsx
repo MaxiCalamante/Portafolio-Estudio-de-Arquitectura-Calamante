@@ -98,8 +98,8 @@ export function Projects() {
 
           return (
             <article
-              className={`project-card ${isLarge ? 'project-card--large' : 'project-card--standard'} reveal`}
-              key={project.id || project.slug}
+              className={`project-card ${isLarge ? 'project-card--large' : 'project-card--standard'}`}
+              key={`${category}-${project.id || project.slug}`}
             >
               <button
                 className="project-card__clickable"
@@ -113,6 +113,7 @@ export function Projects() {
                       src={cover}
                       alt={project.project_images?.[0]?.alt_text || `${project.title} - Arquitecto Javier Calamante en Tandil`}
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className="project__placeholder">Sin imagen disponible</div>
