@@ -13,6 +13,7 @@ const initialForm = {
   message: '',
   consent: true,
   company: '',
+  autoWhatsApp: true,
 }
 
 export function ContactForm() {
@@ -32,7 +33,8 @@ Email: ${data.email || 'No especificado'}.
 Detalle del proyecto:
 ${data.message || 'Quisiera coordinar una reunión de asesoramiento para conversar ideas y presupuesto.'}`
 
-    return `https://wa.me/5492494543936?text=${encodeURIComponent(text.trim())}`
+    const phoneClean = contact.phoneHref.replace('tel:', '').replace('+', '')
+    return `https://wa.me/${phoneClean}?text=${encodeURIComponent(text.trim())}`
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -46,6 +48,8 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     setSubmittedWaUrl(waUrl)
     setStatus('sending')
     setError('')
+
+    const shouldOpenWa = form.autoWhatsApp
 
     if (supabase) {
       try {
@@ -62,6 +66,9 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
           throw submitError
         }
 
+        if (shouldOpenWa) {
+          window.open(waUrl, '_blank', 'noopener,noreferrer')
+        }
         setForm(initialForm)
         setStatus('success')
         return
@@ -71,7 +78,9 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     }
 
     // Direct fallback: Open WhatsApp with the pre-formatted lead
-    window.open(waUrl, '_blank', 'noopener,noreferrer')
+    if (shouldOpenWa) {
+      window.open(waUrl, '_blank', 'noopener,noreferrer')
+    }
     setForm(initialForm)
     setStatus('success')
   }
@@ -80,9 +89,9 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     return (
       <div className="contact-form contact-form--success" role="status">
         <p className="contact-form__number">✓</p>
-        <h3>¡Consulta lista!</h3>
+        <h3>¡Consulta registrada con éxito!</h3>
         <p>
-          Muchas gracias por contactarte. Javier Calamante revisará tu mensaje personalmente a la brevedad para coordinar una reunión de asesoramiento técnico.
+          Muchas gracias por contactarte. Javier Calamante revisará tu mensaje personalmente para coordinar una reunión de asesoramiento técnico.
         </p>
         <div className="contact-form__success-actions">
           <a
@@ -92,7 +101,7 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
             rel="noreferrer"
           >
             <WhatsAppIcon size={16} />
-            <span>Abrir chat de WhatsApp</span>
+            <span>Continuar por WhatsApp ahora</span>
           </a>
           <button type="button" onClick={() => setStatus('idle')} className="text-button">
             Enviar otra consulta
@@ -233,6 +242,17 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
           tabIndex={-1}
           autoComplete="off"
         />
+      </label>
+
+      <label className="contact-form__consent">
+        <input
+          type="checkbox"
+          checked={form.autoWhatsApp}
+          onChange={(event) => setForm({ ...form, autoWhatsApp: event.target.checked })}
+        />
+        <span>
+          Abrir chat de WhatsApp al enviar para recibir respuesta directa de Javier.
+        </span>
       </label>
 
       <label className="contact-form__consent">

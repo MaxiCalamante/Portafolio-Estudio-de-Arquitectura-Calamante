@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { ArrowIcon } from './ArrowIcon'
 import { WhatsAppIcon } from './WhatsAppIcon'
 import { realProjects, contact } from '../data/site'
@@ -11,7 +12,8 @@ export function Projects() {
   const [projects, setProjects] = useState<ProjectWithImages[]>(realProjects)
   const [loading, setLoading] = useState(false)
   const [category, setCategory] = useState('Todos')
-  const [selected, setSelected] = useState<ProjectWithImages | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const obraSlugParam = searchParams.get('obra')
 
   useEffect(() => {
     let active = true
@@ -39,6 +41,34 @@ export function Projects() {
     void loadSupabaseProjects()
     return () => { active = false }
   }, [])
+
+  const selected = useMemo(() => {
+    if (!obraSlugParam) return null
+    return (
+      projects.find(
+        (p) => p.slug === obraSlugParam || String(p.id) === obraSlugParam,
+      ) ?? null
+    )
+  }, [obraSlugParam, projects])
+
+  const handleOpenProject = (project: ProjectWithImages) => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('obra', project.slug)
+        return next
+      },
+      { replace: false },
+    )
+  }
+
+  const handleCloseProject = () => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev)
+      next.delete('obra')
+      return next
+    })
+  }
 
   useEffect(() => {
     document.body.classList.toggle('modal-open', Boolean(selected))
@@ -104,7 +134,7 @@ export function Projects() {
               <button
                 className="project-card__clickable"
                 type="button"
-                onClick={() => setSelected(project)}
+                onClick={() => handleOpenProject(project)}
                 aria-label={`Ver ficha técnica y fotografías de ${project.title}`}
               >
                 <div className="project-card__media">
@@ -185,7 +215,7 @@ export function Projects() {
         </div>
       </div>
 
-      {selected && <ProjectDialog key={selected.id} project={selected} onClose={() => setSelected(null)} />}
+      {selected && <ProjectDialog key={selected.id} project={selected} onClose={handleCloseProject} />}
     </section>
   )
 }
@@ -203,6 +233,7 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const [touchStartX, setTouchStartX] = useState<number | null>(null)
   const [touchDeltaX, setTouchDeltaX] = useState<number>(0)
+  const [copied, setCopied] = useState(false)
 
   const handleNext = useCallback(() => {
     if (images.length <= 1) return
@@ -237,6 +268,19 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
     setTouchDeltaX(0)
   }
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/?obra=${project.slug}`
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2400)
+      } catch {
+        // Fallback si clipboard falla
+      }
+    }
+  }
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') onClose()
@@ -253,7 +297,8 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   const whatsappMessage = encodeURIComponent(
     `Hola Arq. Javier Calamante, estuve viendo la obra "${project.title}" (${project.category}, ${project.location}) en su sitio web y me gustaría consultarle por un proyecto de características similares.`,
   )
-  const whatsappUrl = `https://wa.me/5492494543936?text=${whatsappMessage}`
+  const phoneClean = contact.phoneHref.replace('tel:', '').replace('+', '')
+  const whatsappUrl = `https://wa.me/${phoneClean}?text=${whatsappMessage}`
 
   return (
     <div
@@ -272,6 +317,19 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
           </div>
           <div className="project-dialog__top-actions">
             <span className="project-dialog__keyboard-hint">Teclas ← → para navegar · Esc para cerrar</span>
+            <button
+              className={`project-dialog__share-btn ${copied ? 'is-copied' : ''}`}
+              type="button"
+              onClick={handleShare}
+              title="Copiar enlace directo de esta obra para compartir"
+              aria-label="Copiar enlace de esta obra"
+            >
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+              </svg>
+              <span>{copied ? '¡Enlace copiado!' : 'Compartir obra'}</span>
+            </button>
             <button
               className="project-dialog__close"
               type="button"

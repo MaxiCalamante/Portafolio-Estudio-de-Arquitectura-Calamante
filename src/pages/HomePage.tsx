@@ -1,10 +1,11 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowIcon } from '../components/ArrowIcon'
 import { WhatsAppIcon } from '../components/WhatsAppIcon'
 import { ContactForm } from '../components/ContactForm'
 import { Header } from '../components/Header'
 import { Projects } from '../components/Projects'
+import { ProjectDiagnostic } from '../components/ProjectDiagnostic'
 import {
   contact,
   faqs,
@@ -57,6 +58,10 @@ function Hero() {
           src="/images/projects/casa-sabino/cover.jpg"
           alt="Casa Sabino en Tandil · Arquitectura serrana en piedra y madera por el Arq. Javier Calamante"
           className="hero__img"
+          fetchPriority="high"
+          decoding="async"
+          width="1920"
+          height="1080"
         />
         <div className="hero__image-tag">
           <div className="hero__image-tag-coords">37° 19′ S, 59° 08′ W · Tandil, Argentina</div>
@@ -168,6 +173,8 @@ function Methodology() {
         ))}
       </div>
 
+      <ProjectDiagnostic />
+
       <div className="methodology__banner reveal">
         <div>
           <span className="section-eyebrow section-eyebrow--light">Asesoramiento Inicial</span>
@@ -185,6 +192,12 @@ function Methodology() {
 }
 
 function Services() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
+
+  const toggle = (idx: number) => {
+    setOpenIndex((prev) => (prev === idx ? null : idx))
+  }
+
   return (
     <section className="services section-shell" id="servicios">
       <div className="services__heading reveal">
@@ -193,30 +206,47 @@ function Services() {
         <p>Acompañamiento integral, transparente y con estricto respaldo colegial en el Distrito VIII (CAPBA).</p>
       </div>
       <div className="service-list">
-        {services.map((service) => (
-          <details className="service reveal" key={service.number}>
-            <summary>
-              <span className="service__number">{service.number}</span>
-              <span className="service__title">{service.title}</span>
-              <span className="service__arrow">
-                <ArrowIcon />
-              </span>
-            </summary>
-            <div className="service__content">
-              <p>{service.description}</p>
-              {'deliverables' in service && Array.isArray((service as { deliverables?: readonly string[] }).deliverables) && (
-                <div className="service__deliverables">
-                  <span className="service__deliverables-label">Entregables Técnicos:</span>
-                  <ul>
-                    {((service as { deliverables: readonly string[] }).deliverables).map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
+        {services.map((service, index) => {
+          const isOpen = openIndex === index
+          return (
+            <div className={`service reveal ${isOpen ? 'is-open' : ''}`} key={service.number}>
+              <button
+                type="button"
+                className="service__summary"
+                onClick={() => toggle(index)}
+                aria-expanded={isOpen}
+                aria-controls={`service-desc-${service.number}`}
+              >
+                <span className="service__number">{service.number}</span>
+                <span className="service__title">{service.title}</span>
+                <span className="service__arrow">
+                  <ArrowIcon />
+                </span>
+              </button>
+              <div
+                id={`service-desc-${service.number}`}
+                className="service__drawer"
+                role="region"
+              >
+                <div className="service__drawer-inner">
+                  <div className="service__content">
+                    <p>{service.description}</p>
+                    {'deliverables' in service && Array.isArray((service as { deliverables?: readonly string[] }).deliverables) && (
+                      <div className="service__deliverables">
+                        <span className="service__deliverables-label">Entregables Técnicos:</span>
+                        <ul>
+                          {((service as { deliverables: readonly string[] }).deliverables).map((item, idx) => (
+                            <li key={idx}>{item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              )}
+              </div>
             </div>
-          </details>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
@@ -250,6 +280,12 @@ function Testimonials() {
 }
 
 function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
+
+  const toggle = (idx: number) => {
+    setOpenIndex((prev) => (prev === idx ? null : idx))
+  }
+
   return (
     <section className="faq section-shell" id="preguntas">
       <div className="faq__header reveal">
@@ -259,17 +295,34 @@ function FAQ() {
       </div>
 
       <div className="faq__list">
-        {faqs.map((faq, i) => (
-          <details className="faq-item reveal" key={i}>
-            <summary className="faq-item__question">
-              <span>{faq.question}</span>
-              <span className="faq-item__icon">+</span>
-            </summary>
-            <div className="faq-item__answer">
-              <p>{faq.answer}</p>
+        {faqs.map((faq, i) => {
+          const isOpen = openIndex === i
+          return (
+            <div className={`faq-item reveal ${isOpen ? 'is-open' : ''}`} key={i}>
+              <button
+                type="button"
+                className="faq-item__question"
+                onClick={() => toggle(i)}
+                aria-expanded={isOpen}
+                aria-controls={`faq-answer-${i}`}
+              >
+                <span>{faq.question}</span>
+                <span className="faq-item__icon" aria-hidden="true">+</span>
+              </button>
+              <div
+                id={`faq-answer-${i}`}
+                className="faq-item__drawer"
+                role="region"
+              >
+                <div className="faq-item__drawer-inner">
+                  <div className="faq-item__answer">
+                    <p>{faq.answer}</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </details>
-        ))}
+          )
+        })}
       </div>
     </section>
   )
