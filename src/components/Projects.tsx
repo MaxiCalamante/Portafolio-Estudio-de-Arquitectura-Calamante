@@ -185,7 +185,7 @@ export function Projects() {
         </div>
       </div>
 
-      {selected && <ProjectDialog project={selected} onClose={() => setSelected(null)} />}
+      {selected && <ProjectDialog key={selected.id} project={selected} onClose={() => setSelected(null)} />}
     </section>
   )
 }
@@ -213,10 +213,6 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
     if (images.length <= 1) return
     setActiveImageIdx((prev) => (prev - 1 + images.length) % images.length)
   }, [images.length])
-
-  useEffect(() => {
-    setActiveImageIdx(0)
-  }, [project])
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.targetTouches[0].clientX)
