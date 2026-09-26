@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom'
 export function PrivacyPage() {
   useEffect(() => {
     document.title = 'Privacidad · Estudio Javier Calamante'
-    document.querySelector('meta[name="robots"]')?.setAttribute('content', 'noindex, follow')
+    const metaRobots = document.querySelector('meta[name="robots"]')
+    metaRobots?.setAttribute('content', 'index, follow')
+    return () => {
+      metaRobots?.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
+    }
   }, [])
 
   return (

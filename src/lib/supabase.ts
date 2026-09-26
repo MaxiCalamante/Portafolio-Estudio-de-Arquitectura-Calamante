@@ -23,8 +23,19 @@ export const supabase: SupabaseClient | null = supabaseConfigured
 export function publicImageUrl(storagePath: string | null | undefined) {
   if (!storagePath) return null
   if (storagePath.startsWith('/') || storagePath.startsWith('http://') || storagePath.startsWith('https://')) {
+    if (storagePath.startsWith('/images/projects/') && storagePath.endsWith('.jpg')) {
+      return storagePath.replace(/\.jpg$/, '.webp')
+    }
     return storagePath
   }
   if (!supabase) return null
   return supabase.storage.from('project-images').getPublicUrl(storagePath).data.publicUrl
+}
+
+export function publicThumbUrl(storagePath: string | null | undefined) {
+  if (!storagePath) return null
+  if (storagePath.startsWith('/images/projects/')) {
+    return storagePath.replace(/\.(jpg|webp)$/, '-thumb.webp')
+  }
+  return publicImageUrl(storagePath)
 }

@@ -10,7 +10,11 @@ export function AdminPage() {
 
   useEffect(() => {
     document.title = 'Administración · Javier Calamante'
-    document.querySelector('meta[name="robots"]')?.setAttribute('content', 'noindex, nofollow')
+    const metaRobots = document.querySelector('meta[name="robots"]')
+    metaRobots?.setAttribute('content', 'noindex, nofollow')
+    return () => {
+      metaRobots?.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')
+    }
   }, [])
 
   return (

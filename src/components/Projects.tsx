@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowIcon } from './ArrowIcon'
 import { WhatsAppIcon } from './WhatsAppIcon'
 import { realProjects, contact } from '../data/site'
-import { publicImageUrl, supabase } from '../lib/supabase'
+import { publicImageUrl, publicThumbUrl, supabase } from '../lib/supabase'
 import type { ProjectWithImages } from '../types/content'
 
 const baseCategories = ['Todos', 'Residencial', 'Comercial', 'Interiores', 'Reforma', 'Institucional']
@@ -13,7 +13,10 @@ export function Projects() {
   const [loading, setLoading] = useState(false)
   const [category, setCategory] = useState('Todos')
   const [searchParams, setSearchParams] = useSearchParams()
-  const obraSlugParam = searchParams.get('obra')
+  const { slug: routeSlug } = useParams<{ slug?: string }>()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const obraSlugParam = searchParams.get('obra') || routeSlug
 
   useEffect(() => {
     let active = true
@@ -52,27 +55,80 @@ export function Projects() {
   }, [obraSlugParam, projects])
 
   const handleOpenProject = (project: ProjectWithImages) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev)
-        next.set('obra', project.slug)
-        return next
-      },
-      { replace: false },
-    )
+    if (location.pathname.startsWith('/obra/')) {
+      navigate(`/obra/${project.slug}`)
+    } else {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev)
+          next.set('obra', project.slug)
+          return next
+        },
+        { replace: false },
+      )
+    }
   }
 
   const handleCloseProject = () => {
-    setSearchParams((prev) => {
-      const next = new URLSearchParams(prev)
-      next.delete('obra')
-      return next
-    })
+    if (location.pathname.startsWith('/obra/')) {
+      navigate('/')
+    } else {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev)
+        next.delete('obra')
+        return next
+      })
+    }
   }
 
+  // Sincronización de título de documento y metaetiquetas Open Graph por obra
   useEffect(() => {
     document.body.classList.toggle('modal-open', Boolean(selected))
-    return () => document.body.classList.remove('modal-open')
+
+    if (!selected) {
+      document.title = 'Estudio Javier Calamante · Arquitecto en Tandil | Matr. CAPBA 15327'
+      const ogTitle = document.querySelector('meta[property="og:title"]')
+      const ogDesc = document.querySelector('meta[property="og:description"]')
+      const ogImage = document.querySelector('meta[property="og:image"]')
+      const ogUrl = document.querySelector('meta[property="og:url"]')
+      if (ogTitle) ogTitle.setAttribute('content', 'Estudio Javier Calamante · Arquitecto en Tandil | Matr. CAPBA 15327')
+      if (ogDesc) ogDesc.setAttribute('content', 'Más de 28 años de trayectoria proyectando residencias singulares, reformas e intervenciones en Tandil.')
+      if (ogImage) ogImage.setAttribute('content', 'https://javier-calamante-arquitecto.vercel.app/images/projects/casa-sabino/cover.webp')
+      if (ogUrl) ogUrl.setAttribute('content', 'https://javier-calamante-arquitecto.vercel.app/')
+      return () => {
+        document.body.classList.remove('modal-open')
+      }
+    }
+
+    const prevTitle = document.title
+    document.title = `${selected.title} (${selected.category}) · Arq. Javier Calamante Tandil`
+
+    const cover = selected.cover_image_path ? publicImageUrl(selected.cover_image_path) : null
+    const absoluteCover = cover
+      ? (cover.startsWith('http') ? cover : `${window.location.origin}${cover}`)
+      : 'https://javier-calamante-arquitecto.vercel.app/images/projects/casa-sabino/cover.webp'
+    const desc = selected.excerpt || selected.description.slice(0, 160)
+
+    const ogTitle = document.querySelector('meta[property="og:title"]')
+    const ogDesc = document.querySelector('meta[property="og:description"]')
+    const ogImage = document.querySelector('meta[property="og:image"]')
+    const ogUrl = document.querySelector('meta[property="og:url"]')
+    const twTitle = document.querySelector('meta[name="twitter:title"]')
+    const twDesc = document.querySelector('meta[name="twitter:description"]')
+    const twImage = document.querySelector('meta[name="twitter:image"]')
+
+    if (ogTitle) ogTitle.setAttribute('content', `${selected.title} (${selected.category}) · Arq. Javier Calamante`)
+    if (ogDesc) ogDesc.setAttribute('content', desc)
+    if (ogImage) ogImage.setAttribute('content', absoluteCover)
+    if (ogUrl) ogUrl.setAttribute('content', `${window.location.origin}/obra/${selected.slug}`)
+    if (twTitle) twTitle.setAttribute('content', `${selected.title} · Javier Calamante`)
+    if (twDesc) twDesc.setAttribute('content', desc)
+    if (twImage) twImage.setAttribute('content', absoluteCover)
+
+    return () => {
+      document.body.classList.remove('modal-open')
+      document.title = prevTitle
+    }
   }, [selected])
 
   const categoryCounts = useMemo(() => {
@@ -269,7 +325,19 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
   }
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/?obra=${project.slug}`
+    const shareUrl = `${window.location.origin}/obra/${project.slug}`
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${project.title} · Arq. Javier Calamante`,
+          text: `Mirá esta obra de arquitectura (${project.category}, ${project.location}) del Estudio Javier Calamante:`,
+          url: shareUrl,
+        })
+        return
+      } catch {
+        // Fallback al portapapeles si no se concretó la acción
+      }
+    }
     if (navigator.clipboard) {
       try {
         await navigator.clipboard.writeText(shareUrl)
@@ -392,7 +460,7 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
                 {images.length > 1 && (
                   <div className="dialog-viewer__thumbs" role="tablist" aria-label="Fotografías de la obra">
                     {images.map((img, idx) => {
-                      const thumbUrl = publicImageUrl(img.storage_path)
+                      const thumbUrl = publicThumbUrl(img.storage_path)
                       if (!thumbUrl) return null
                       return (
                         <button
@@ -403,7 +471,7 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
                           aria-label={`Ver fotografía ${idx + 1}`}
                           aria-selected={idx === activeImageIdx}
                         >
-                          <img src={thumbUrl} alt="" loading="lazy" />
+                          <img src={thumbUrl} alt="" loading="lazy" decoding="async" width="60" height="44" />
                         </button>
                       )
                     })}

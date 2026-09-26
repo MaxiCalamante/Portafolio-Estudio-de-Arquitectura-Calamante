@@ -55,7 +55,7 @@ function Hero() {
 
       <div className="hero__media-wrapper">
         <img
-          src="/images/projects/casa-sabino/cover.jpg"
+          src="/images/projects/casa-sabino/cover.webp"
           alt="Casa Sabino en Tandil · Arquitectura serrana en piedra y madera por el Arq. Javier Calamante"
           className="hero__img"
           fetchPriority="high"

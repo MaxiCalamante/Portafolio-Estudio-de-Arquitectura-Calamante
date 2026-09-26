@@ -37,6 +37,15 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     return `https://wa.me/${phoneClean}?text=${encodeURIComponent(text.trim())}`
   }
 
+function mapToCanonicalProjectType(projectType: string): string {
+  if (projectType.includes('Vivienda')) return 'Vivienda nueva'
+  if (projectType.includes('Reforma') || projectType.includes('Quincho')) return 'Reforma'
+  if (projectType.includes('Edificio') || projectType.includes('comercial') || projectType.includes('oficina')) return 'Comercial'
+  if (projectType.includes('Interiores') || projectType.includes('cocina') || projectType.includes('baño')) return 'Interiores'
+  if (projectType.includes('Dirección') || projectType.includes('Planos')) return 'Dirección de obra'
+  return 'Consulta general'
+}
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     if (form.company) {
@@ -50,21 +59,47 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
     setError('')
 
     const shouldOpenWa = form.autoWhatsApp
+    const canonicalProjectType = mapToCanonicalProjectType(form.projectType)
+    const enrichedMessage = `[Zona / Ubicación: ${form.location}]
+[Situación del proyecto: ${form.budgetRange}]
+[Tipología elegida: ${form.projectType}]
+
+Mensaje:
+${form.message.trim()}`
 
     if (supabase) {
       try {
-        const { error: submitError } = await supabase.rpc('submit_inquiry', {
-          p_name: form.name,
-          p_email: form.email,
-          p_phone: form.phone,
-          p_project_type: `${form.projectType} (${form.location}) - ${form.budgetRange}`,
-          p_message: form.message,
+        const { data: inquiryId, error: submitError } = await supabase.rpc('submit_inquiry', {
+          p_name: form.name.trim(),
+          p_email: form.email.trim(),
+          p_phone: form.phone.trim(),
+          p_project_type: canonicalProjectType,
+          p_message: enrichedMessage,
           p_consent: form.consent,
         })
 
         if (submitError) {
           throw submitError
         }
+
+        // Notificación en tiempo real al arquitecto (Supabase Edge Function)
+        void supabase.functions
+          .invoke('notify-inquiry', {
+            body: {
+              id: inquiryId,
+              name: form.name.trim(),
+              email: form.email.trim(),
+              phone: form.phone.trim(),
+              projectType: form.projectType,
+              canonicalType: canonicalProjectType,
+              location: form.location,
+              budgetRange: form.budgetRange,
+              message: form.message.trim(),
+            },
+          })
+          .catch(() => {
+            // Falla no bloqueante si no está configurada la función
+          })
 
         if (shouldOpenWa) {
           window.open(waUrl, '_blank', 'noopener,noreferrer')
@@ -74,6 +109,15 @@ ${data.message || 'Quisiera coordinar una reunión de asesoramiento para convers
         return
       } catch (err: unknown) {
         console.warn('Supabase submission fallback to WhatsApp', err)
+        if (shouldOpenWa) {
+          window.open(waUrl, '_blank', 'noopener,noreferrer')
+          setForm(initialForm)
+          setStatus('success')
+          return
+        }
+        setError('Ocurrió un inconveniente al registrar la consulta. Podés comunicarte directamente con Javier por WhatsApp.')
+        setStatus('error')
+        return
       }
     }
 

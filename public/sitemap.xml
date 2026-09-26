@@ -3,29 +3,69 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://javier-calamante-arquitecto.vercel.app/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <image:image>
-      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-sabino/cover.jpg</image:loc>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-sabino/cover.webp</image:loc>
       <image:title>Casa Sabino en Tandil · Arquitectura serrana por el Arq. Javier Calamante</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-bertini/cover.jpg</image:loc>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-bertini/cover.webp</image:loc>
       <image:title>Casa Bertini · Proyecto integral y diseño interior en Tandil</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/edificio-roca/cover.jpg</image:loc>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/edificio-roca/cover.webp</image:loc>
       <image:title>Edificio Roca en Tandil · Arquitectura comercial y residencial</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-haristeguy/cover.jpg</image:loc>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-haristeguy/cover.webp</image:loc>
       <image:title>Casa Haristeguy · Solárium, piscina y parque en Tandil</image:title>
     </image:image>
   </url>
   <url>
+    <loc>https://javier-calamante-arquitecto.vercel.app/obra/casa-sabino</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-sabino/cover.webp</image:loc>
+      <image:title>Casa Sabino en las Sierras de Tandil · Arq. Javier Calamante</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://javier-calamante-arquitecto.vercel.app/obra/casa-bertini</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-bertini/cover.webp</image:loc>
+      <image:title>Casa Bertini en Tandil · Arq. Javier Calamante</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://javier-calamante-arquitecto.vercel.app/obra/edificio-roca</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/edificio-roca/cover.webp</image:loc>
+      <image:title>Edificio Roca en Tandil · Arq. Javier Calamante</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://javier-calamante-arquitecto.vercel.app/obra/casa-haristeguy</loc>
+    <lastmod>2026-09-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://javier-calamante-arquitecto.vercel.app/images/projects/casa-haristeguy/cover.webp</image:loc>
+      <image:title>Casa Haristeguy en Tandil · Arq. Javier Calamante</image:title>
+    </image:image>
+  </url>
+  <url>
     <loc>https://javier-calamante-arquitecto.vercel.app/privacidad</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>

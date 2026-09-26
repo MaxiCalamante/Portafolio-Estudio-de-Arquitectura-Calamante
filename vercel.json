@@ -1,6 +1,7 @@
 {
   "rewrites": [
-    { "source": "/((?!robots.txt|sitemap.xml|site.webmanifest|favicon.svg|images/).*)", "destination": "/index.html" }
+    { "source": "/obra/:slug", "destination": "/api/share?slug=:slug" },
+    { "source": "/((?!robots.txt|sitemap.xml|site.webmanifest|favicon.svg|images/|api/).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

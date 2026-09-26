@@ -34,6 +34,7 @@ function App() {
         <Suspense fallback={<PageLoading />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/obra/:slug" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
             <Route path="/privacidad" element={<PrivacyPage />} />

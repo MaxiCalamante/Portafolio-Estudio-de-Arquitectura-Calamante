@@ -171,8 +171,10 @@ function ProjectEditor({ project, onClose, onSaved }: { project: ProjectWithImag
         setSaving(false)
         return
       }
-      const path = `${savedProject.id}/${safeFileName(file.name)}`
-      const { error: uploadError } = await supabase.storage.from('project-images').upload(path, file, { cacheControl: '31536000', upsert: false })
+      const fileExt = file.name.split('.').pop() || 'jpg'
+      const cleanBase = safeFileName(file.name.replace(/\.[^/.]+$/, ''))
+      const path = `${savedProject.id}/${Date.now()}-${Math.random().toString(36).substring(2, 6)}-${cleanBase}.${fileExt}`
+      const { error: uploadError } = await supabase.storage.from('project-images').upload(path, file, { cacheControl: '31536000', upsert: true })
       if (uploadError) {
         setError(`No se pudo subir ${file.name}: ${uploadError.message}`)
         setSaving(false)
