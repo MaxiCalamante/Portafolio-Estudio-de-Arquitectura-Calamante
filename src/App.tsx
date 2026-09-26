@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-route
 import { AuthProvider } from './hooks/AuthProvider'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { HomePage } from './pages/HomePage'
+import { ErrorBoundary } from './components/ErrorBoundary'
 
 const LoginPage = lazy(() => import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })))
 const AdminPage = lazy(() => import('./pages/AdminPage').then((m) => ({ default: m.AdminPage })))
@@ -31,16 +32,18 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <AuthProvider>
-        <Suspense fallback={<PageLoading />}>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/obra/:slug" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-            <Route path="/privacidad" element={<PrivacyPage />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<PageLoading />}>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/obra/:slug" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+              <Route path="/privacidad" element={<PrivacyPage />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       </AuthProvider>
     </BrowserRouter>
   )

@@ -4,6 +4,8 @@ import { ArrowIcon } from './ArrowIcon'
 import { WhatsAppIcon } from './WhatsAppIcon'
 import { realProjects, contact } from '../data/site'
 import { publicImageUrl, publicThumbUrl, supabase } from '../lib/supabase'
+import { trackProjectViewed, trackWhatsAppClick } from '../lib/analytics'
+import { useFocusTrap } from '../hooks/useFocusTrap'
 import type { ProjectWithImages } from '../types/content'
 
 const baseCategories = ['Todos', 'Residencial', 'Comercial', 'Interiores', 'Reforma', 'Institucional']
@@ -55,6 +57,7 @@ export function Projects() {
   }, [obraSlugParam, projects])
 
   const handleOpenProject = (project: ProjectWithImages) => {
+    trackProjectViewed(project.slug, project.title, project.category)
     if (location.pathname.startsWith('/obra/')) {
       navigate(`/obra/${project.slug}`)
     } else {
@@ -277,6 +280,7 @@ export function Projects() {
 }
 
 function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClose: () => void }) {
+  const dialogRef = useFocusTrap<HTMLDivElement>(true)
   const images = useMemo(() => {
     const sorted = [...(project.project_images || [])].sort((a, b) => a.sort_order - b.sort_order)
     if (sorted.length > 0) return sorted
@@ -370,10 +374,12 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
 
   return (
     <div
+      ref={dialogRef}
       className="project-dialog"
       role="dialog"
       aria-modal="true"
       aria-labelledby="project-dialog-title"
+      tabIndex={-1}
       onMouseDown={(event) => event.target === event.currentTarget && onClose()}
     >
       <div className="project-dialog__panel">
@@ -549,6 +555,13 @@ function ProjectDialog({ project, onClose }: { project: ProjectWithImages; onClo
                   href={whatsappUrl}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() =>
+                    trackWhatsAppClick('project_dialog', {
+                      title: project.title,
+                      slug: project.slug,
+                      category: project.category,
+                    })
+                  }
                 >
                   <WhatsAppIcon size={16} />
                   <span>Consultar por esta obra</span>

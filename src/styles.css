@@ -2023,6 +2023,34 @@ address { font-style: normal; }
   background: var(--whatsapp);
   box-shadow: 0 0 6px var(--whatsapp);
 }
+.contact-form__diagnostic-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  background: rgba(201, 168, 117, 0.12);
+  border: 1px solid rgba(201, 168, 117, 0.35);
+  color: var(--accent);
+  padding: 0.65rem 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+.contact-form__diagnostic-notice-text strong {
+  color: #ffffff;
+  margin-right: 0.25rem;
+}
+.contact-form__diagnostic-notice-close {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0.2rem;
+}
+.contact-form__diagnostic-notice-close:hover {
+  color: #ffffff;
+}
 .contact-form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 1rem; }
 .contact-form label { display: grid; gap: .55rem; color: #c8c6c1; font-size: .7rem; letter-spacing: .04em; }
 .contact-form input, .contact-form select, .contact-form textarea {

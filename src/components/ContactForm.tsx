@@ -1,7 +1,8 @@
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, useRef, type FormEvent } from 'react'
 import { supabase } from '../lib/supabase'
 import { contact } from '../data/site'
 import { WhatsAppIcon } from './WhatsAppIcon'
+import { trackLeadSubmitted, trackWhatsAppClick } from '../lib/analytics'
 
 const initialForm = {
   name: '',
@@ -21,6 +22,56 @@ export function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
   const [error, setError] = useState('')
   const [submittedWaUrl, setSubmittedWaUrl] = useState('')
+  const [diagnosticBadge, setDiagnosticBadge] = useState<string | null>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    function handleApplyDiagnostic(e: Event) {
+      const customEvent = e as CustomEvent<{
+        situation: string
+        location: string
+        typology: string
+        situationLabel: string
+        locationLabel: string
+        typologyLabel: string
+      }>
+      if (!customEvent.detail) return
+
+      const { situation, location, typology, situationLabel, locationLabel, typologyLabel } = customEvent.detail
+
+      let mappedType = 'Vivienda nueva unifamiliar'
+      if (typology === 'reforma') mappedType = 'Reforma integral o ampliación'
+      else if (typology === 'comercial') mappedType = 'Edificio residencial / PH'
+
+      let mappedLocation = 'Zona Serrana / Don Bosco / El Paraíso'
+      if (location === 'golf') mappedLocation = 'Zona de Quintas / Golf'
+      else if (location === 'urbana') mappedLocation = 'Tandil (Zona Urbana / Centro)'
+      else if (location === 'comercial') mappedLocation = 'Tandil (Zona Urbana / Centro)'
+
+      let mappedBudget = 'Tengo lote y quiero diseñar el proyecto'
+      if (situation === 'buscando-lote') mappedBudget = 'Estoy evaluando comprar un terreno'
+      else if (situation === 'reforma') mappedBudget = 'Quiero reformar o ampliar mi casa actual'
+
+      const prefilledMsg = `Hola Javier, completé el diagnóstico técnico preliminar en la web para un proyecto de ${typologyLabel} en ${locationLabel} (${situationLabel}). Quisiera coordinar una reunión de asesoramiento para analizar el terreno y evaluar el proyecto.`
+
+      setForm((prev) => ({
+        ...prev,
+        projectType: mappedType,
+        location: mappedLocation,
+        budgetRange: mappedBudget,
+        message: prefilledMsg,
+      }))
+
+      setDiagnosticBadge(`Diagnóstico cargado: ${typologyLabel} · ${locationLabel}`)
+
+      setTimeout(() => {
+        nameInputRef.current?.focus()
+      }, 450)
+    }
+
+    window.addEventListener('apply-diagnostic', handleApplyDiagnostic)
+    return () => window.removeEventListener('apply-diagnostic', handleApplyDiagnostic)
+  }, [])
 
   function getFormattedWhatsAppUrl(data = form) {
     const text = `Hola Arq. Javier Calamante, mi nombre es ${data.name || 'un interesado'}.
@@ -101,7 +152,16 @@ ${form.message.trim()}`
             // Falla no bloqueante si no está configurada la función
           })
 
+        trackLeadSubmitted({
+          projectType: form.projectType,
+          canonicalType: canonicalProjectType,
+          location: form.location,
+          budgetRange: form.budgetRange,
+          autoWhatsApp: shouldOpenWa,
+        })
+
         if (shouldOpenWa) {
+          trackWhatsAppClick('contact_success_screen', { auto: true })
           window.open(waUrl, '_blank', 'noopener,noreferrer')
         }
         setForm(initialForm)
@@ -109,7 +169,15 @@ ${form.message.trim()}`
         return
       } catch (err: unknown) {
         console.warn('Supabase submission fallback to WhatsApp', err)
+        trackLeadSubmitted({
+          projectType: form.projectType,
+          canonicalType: canonicalProjectType,
+          location: form.location,
+          budgetRange: form.budgetRange,
+          fallback: true,
+        })
         if (shouldOpenWa) {
+          trackWhatsAppClick('contact_success_screen', { auto: true, fallback: true })
           window.open(waUrl, '_blank', 'noopener,noreferrer')
           setForm(initialForm)
           setStatus('success')
@@ -121,8 +189,17 @@ ${form.message.trim()}`
       }
     }
 
+    trackLeadSubmitted({
+      projectType: form.projectType,
+      canonicalType: canonicalProjectType,
+      location: form.location,
+      budgetRange: form.budgetRange,
+      direct: true,
+    })
+
     // Direct fallback: Open WhatsApp with the pre-formatted lead
     if (shouldOpenWa) {
+      trackWhatsAppClick('contact_success_screen', { auto: true, direct: true })
       window.open(waUrl, '_blank', 'noopener,noreferrer')
     }
     setForm(initialForm)
@@ -143,6 +220,7 @@ ${form.message.trim()}`
             href={submittedWaUrl || getFormattedWhatsAppUrl()}
             target="_blank"
             rel="noreferrer"
+            onClick={() => trackWhatsAppClick('contact_success_screen')}
           >
             <WhatsAppIcon size={16} />
             <span>Continuar por WhatsApp ahora</span>
@@ -168,16 +246,34 @@ ${form.message.trim()}`
           rel="noreferrer"
           className="badge-direct-wa"
           title="Respuesta directa por WhatsApp"
+          onClick={() => trackWhatsAppClick('contact_direct_badge')}
         >
           <WhatsAppIcon size={14} />
           <span>Atención Directa</span>
         </a>
       </div>
 
+      {diagnosticBadge && (
+        <div className="contact-form__diagnostic-notice" role="status">
+          <span className="contact-form__diagnostic-notice-text">
+            <strong>✓ Parámetros cargados:</strong> {diagnosticBadge}
+          </span>
+          <button
+            type="button"
+            className="contact-form__diagnostic-notice-close"
+            onClick={() => setDiagnosticBadge(null)}
+            aria-label="Cerrar aviso"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       <div className="contact-form__grid">
         <label>
           Nombre y apellido *
           <input
+            ref={nameInputRef}
             value={form.name}
             onChange={(event) => setForm({ ...form, name: event.target.value })}
             minLength={2}

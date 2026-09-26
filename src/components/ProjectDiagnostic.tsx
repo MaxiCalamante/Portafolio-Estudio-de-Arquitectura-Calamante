@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { WhatsAppIcon } from './WhatsAppIcon'
 import { ArrowIcon } from './ArrowIcon'
 import { contact } from '../data/site'
+import { trackDiagnosticCompleted, trackWhatsAppClick } from '../lib/analytics'
 
 interface Option {
   id: string
@@ -178,11 +179,51 @@ Me gustaría coordinar una reunión de asesoramiento técnico en su estudio para
             href={whatsappMessage}
             target="_blank"
             rel="noreferrer"
+            onClick={() =>
+              trackWhatsAppClick('diagnostic_result', {
+                situation,
+                location,
+                typology,
+                situationLabel: selectedSituation.label,
+                locationLabel: selectedLocation.label,
+                typologyLabel: selectedTypology.label,
+              })
+            }
           >
             <WhatsAppIcon size={16} />
             <span>Consultar este caso con Javier por WhatsApp</span>
           </a>
-          <a className="button button--secondary-outline" href="#contacto">
+          <a
+            className="button button--secondary-outline"
+            href="#contacto"
+            onClick={(e) => {
+              e.preventDefault()
+              trackDiagnosticCompleted({
+                situation,
+                location,
+                typology,
+                situationLabel: selectedSituation.label,
+                locationLabel: selectedLocation.label,
+                typologyLabel: selectedTypology.label,
+              })
+              window.dispatchEvent(
+                new CustomEvent('apply-diagnostic', {
+                  detail: {
+                    situation,
+                    location,
+                    typology,
+                    situationLabel: selectedSituation.label,
+                    locationLabel: selectedLocation.label,
+                    typologyLabel: selectedTypology.label,
+                  },
+                }),
+              )
+              const contactElem = document.querySelector('#contacto')
+              if (contactElem) {
+                contactElem.scrollIntoView({ behavior: 'smooth' })
+              }
+            }}
+          >
             <span>Completar consulta formal en el formulario</span>
             <ArrowIcon />
           </a>

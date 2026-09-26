@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { contact } from '../data/site'
 import { WhatsAppIcon } from './WhatsAppIcon'
+import { trackWhatsAppClick } from '../lib/analytics'
 
 const navItems = [
   ['Obras', '#proyectos'],
@@ -182,6 +183,7 @@ export function Header() {
             rel="noreferrer"
             className="header-cta"
             aria-label="Contactar al arquitecto por WhatsApp"
+            onClick={() => trackWhatsAppClick('header_cta')}
           >
             <WhatsAppIcon size={15} />
             <span>Consultar Obra</span>
@@ -262,7 +264,10 @@ export function Header() {
                 target="_blank"
                 rel="noreferrer"
                 className="mobile-menu__whatsapp"
-                onClick={closeMenuImmediately}
+                onClick={() => {
+                  trackWhatsAppClick('header_cta')
+                  closeMenuImmediately()
+                }}
               >
                 <WhatsAppIcon size={18} />
                 <span>Consultar por WhatsApp</span>

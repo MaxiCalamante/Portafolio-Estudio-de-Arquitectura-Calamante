@@ -13,6 +13,8 @@ interface ProjectFormState {
   location: string
   category: ProjectCategory
   completionYear: string
+  surface: string
+  materials: string
   status: ProjectStatus
   featured: boolean
   sortOrder: string
@@ -26,6 +28,8 @@ const emptyForm: ProjectFormState = {
   location: 'Tandil, Buenos Aires',
   category: 'Residencial',
   completionYear: '',
+  surface: '',
+  materials: '',
   status: 'draft',
   featured: false,
   sortOrder: '0',
@@ -97,7 +101,7 @@ export function ProjectManager() {
               <div className="admin-project-row__main">
                 <span className={`status-dot status-dot--${project.status}`}>{project.status === 'published' ? 'Publicado' : 'Borrador'}</span>
                 <h2>{project.title}</h2>
-                <p>{project.category} · {project.location}{project.completion_year ? ` · ${project.completion_year}` : ''}</p>
+                <p>{project.category} · {project.location}{project.completion_year ? ` · ${project.completion_year}` : ''}{project.surface ? ` · ${project.surface}` : ''}</p>
               </div>
               <div className="admin-project-row__meta">
                 <span>{project.project_images.length} foto{project.project_images.length === 1 ? '' : 's'}</span>
@@ -146,6 +150,8 @@ function ProjectEditor({ project, onClose, onSaved }: { project: ProjectWithImag
       location: form.location.trim(),
       category: form.category,
       completion_year: form.completionYear ? Number(form.completionYear) : null,
+      surface: form.surface.trim() || null,
+      materials: form.materials.trim() || null,
       status: form.status,
       featured: form.featured,
       sort_order: Number(form.sortOrder) || 0,
@@ -237,6 +243,10 @@ function ProjectEditor({ project, onClose, onSaved }: { project: ProjectWithImag
             <label>Categoría<select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value as ProjectCategory })}>{categories.map((category) => <option key={category}>{category}</option>)}</select></label>
             <label>Año<input type="number" min="1950" max="2100" value={form.completionYear} onChange={(event) => setForm({ ...form, completionYear: event.target.value })} /></label>
           </div>
+          <div className="admin-form__grid">
+            <label>Superficie (m²)<input placeholder="Ej. 320 m² cubiertos" value={form.surface} onChange={(event) => setForm({ ...form, surface: event.target.value })} maxLength={120} /></label>
+            <label>Materiales constructivos<input placeholder="Ej. Piedra de Tandil, hormigón visto, madera" value={form.materials} onChange={(event) => setForm({ ...form, materials: event.target.value })} maxLength={280} /></label>
+          </div>
           <label>Ubicación<input value={form.location} onChange={(event) => setForm({ ...form, location: event.target.value })} required maxLength={160} /></label>
           <label>Resumen<textarea value={form.excerpt} onChange={(event) => setForm({ ...form, excerpt: event.target.value })} maxLength={280} rows={3} /></label>
           <label>Descripción<textarea value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} maxLength={12000} rows={8} /></label>
@@ -282,6 +292,8 @@ function projectToForm(project: ProjectWithImages): ProjectFormState {
     location: project.location ?? 'Tandil, Buenos Aires',
     category: project.category ?? 'Residencial',
     completionYear: project.completion_year?.toString() ?? '',
+    surface: project.surface ?? '',
+    materials: project.materials ?? '',
     status: project.status ?? 'draft',
     featured: Boolean(project.featured),
     sortOrder: (project.sort_order ?? 0).toString(),

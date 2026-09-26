@@ -6,6 +6,7 @@ import { ContactForm } from '../components/ContactForm'
 import { Header } from '../components/Header'
 import { Projects } from '../components/Projects'
 import { ProjectDiagnostic } from '../components/ProjectDiagnostic'
+import { trackWhatsAppClick } from '../lib/analytics'
 import {
   contact,
   faqs,
@@ -337,6 +338,7 @@ function FloatingWhatsApp() {
       className="floating-whatsapp"
       aria-label="Contactar al Arq. Javier Calamante por WhatsApp"
       title="Consultar por WhatsApp con Javier Calamante (+54 9 2494 54-3936)"
+      onClick={() => trackWhatsAppClick('floating_button')}
     >
       <div className="floating-whatsapp__icon-wrap">
         <WhatsAppIcon size={24} />
@@ -365,7 +367,13 @@ function Contact() {
             analizará tu consulta personalmente para coordinar una reunión de diagnóstico.
           </p>
           <div className="contact__quick-actions">
-            <a href={contact.whatsappHref} target="_blank" rel="noreferrer" className="contact-quick-link">
+            <a
+              href={contact.whatsappHref}
+              target="_blank"
+              rel="noreferrer"
+              className="contact-quick-link"
+              onClick={() => trackWhatsAppClick('contact_quick_action')}
+            >
               <WhatsAppIcon size={16} />
               <span>WhatsApp Directo</span>
               <ArrowIcon />
